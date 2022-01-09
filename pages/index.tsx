@@ -1,10 +1,8 @@
 import Head from 'next/head'
+import Timer from '../src/components/Timer'
 
 export default function Home() {
   return (
-    <div className="">
-      <h1>Hello world</h1>
-      
-    </div>
+    <Timer />
   )
 }
