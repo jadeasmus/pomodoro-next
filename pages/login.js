@@ -4,9 +4,14 @@ import { supabase } from '../utils/supabase'
 export default function login() {
 
     useEffect(() => {
-        supabase.auth.signIn({
-            provider: 'spotify'
-        })
+        const login = async () => {
+            await supabase.auth.signIn({
+                provider: 'spotify'
+            })
+        }
+
+        login()
+        
     }, [])
 
     return (
