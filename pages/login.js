@@ -6,7 +6,7 @@ export default function login() {
     useEffect(() => {
         const login = async () => {
             await supabase.auth.signIn({
-                provider: 'spotify'
+                provider: 'spotify',
             })
         }
 

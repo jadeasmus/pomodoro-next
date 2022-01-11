@@ -1,6 +1,7 @@
 import Head from 'next/head'
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
+import axios from 'axios'
 
 import Timer from '../src/components/Timer'
 import { supabase } from '../utils/supabase'
@@ -12,7 +13,31 @@ import { supabase } from '../utils/supabase'
 export default function Home() {
 
   const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [playlistData, setPlaylistData] = useState({})
+
   const logged = supabase.auth.user()
+  const access_token = supabase.auth.session()?.access_token
+  const provider_token = supabase.auth.session()?.provider_token
+  const refresh_token = supabase.auth.session()?.refresh_token
+
+  const playlists_endpoint = 'https://api.spotify.com/v1/me/playlists'
+
+  useEffect(() => {
+    axios.get(playlists_endpoint, {
+      headers: {
+        Authorization: `Bearer ${provider_token}`,
+      },
+    })
+    .then(response => {
+      setPlaylistData(response.data)
+    })
+    .catch(error => {
+      console.log(error)
+    })
+
+    console.log(playlistData)
+
+  }, [provider_token]);
 
   useEffect(() => {
     setIsLoggedIn(supabase.auth.user() ? true : false)
