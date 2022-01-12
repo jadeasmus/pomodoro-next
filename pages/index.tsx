@@ -87,8 +87,8 @@ export default function Home() {
 
       {/* Choose playlist */}
       <div className="relative">
-        <h1 className="font-bold m-5 text-center">Choose a playlist to listen to</h1>
-        <div className="fixed left-1/3 ml-14 w-96 bg-blue-400 p-3 rounded h-1/2 overflow-auto">
+        <div className="fixed mt-10 left-1/3 ml-14 w-96 bg-blue-400 p-3 rounded h-1/2 overflow-auto">
+        <h1 className="font-bold mt-2 mb-4 text-white text-center">Choose a playlist to listen to</h1>
           {playlistData ? 
             playlistData.map((obj) => 
               <button onClick={handleTracks} className="flex mx-auto bg-white py-3 m-2 px-4 w-full rounded">{ obj.name }</button>
