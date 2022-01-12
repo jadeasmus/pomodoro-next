@@ -10,15 +10,33 @@ import { supabase } from '../utils/supabase'
   Handles spoify login and display of timer and player components
 */
 
+interface Playlist { 
+  collaborative: boolean, 
+  description: string, 
+  external_urls: {},
+  href: string,
+  id: string,
+  images: [],
+  name: string,
+  owner: {}, 
+  primary_color: null,
+  public: boolean,
+  snapshot_id: string,
+  tracks: {},
+  type: string,
+  uri: string
+}
+
+
 export default function Home() {
 
   const [isLoggedIn, setIsLoggedIn] = useState(false)
-  const [playlistData, setPlaylistData] = useState({})
+  const [playlistData, setPlaylistData] = useState<Playlist[]>([])
 
   const logged = supabase.auth.user()
-  const access_token = supabase.auth.session()?.access_token
+  console.log('user: ', logged)
   const provider_token = supabase.auth.session()?.provider_token
-  const refresh_token = supabase.auth.session()?.refresh_token
+  // const refresh_token = supabase.auth.session()?.refresh_token
 
   const playlists_endpoint = 'https://api.spotify.com/v1/me/playlists'
 
@@ -29,22 +47,28 @@ export default function Home() {
       },
     })
     .then(response => {
-      setPlaylistData(response.data)
+      setPlaylistData(response.data.items)
+      // console.log('data: ', response.data.items)
     })
     .catch(error => {
       console.log(error)
     })
 
-    console.log(playlistData)
-
-  }, [provider_token]);
-
+    
+  }, [logged]);
+  
   useEffect(() => {
     setIsLoggedIn(supabase.auth.user() ? true : false)
   }, [logged])
 
+  const handleTracks = () => {
+
+  }
+  
+  console.log(playlistData)
+
   return (
-    <>
+    <div>
       {/* Login button */}
       <div className="absolute top-8">
         <Link href='/login'>
@@ -57,9 +81,39 @@ export default function Home() {
         </Link>
       </div>
 
+
       {/* Timer component */}
       <Timer />
-    
-    </>
+
+      {/* Choose playlist */}
+      <div className="text-center mt-10">
+        <h1 className="font-bold mb-3">Choose a playlist to listen to</h1>
+        {playlistData ? 
+          playlistData.map((obj) => 
+            <button onClick={handleTracks} className="justify-center items-center bg-white py-1 m-2 px-2 rounded">{ obj.name }</button>
+          ) 
+        : 
+          null 
+        } 
+      </div>
+    </div>
   )
 }
+
+// export const getServerSideProps = async () => {
+//   const data = await fetch('https://api.spotify.com/v1/me/playlists',
+//   {
+//     headers: {
+//       Authorization: `Bearer ${supabase.auth.session()?.provider_token}`
+//     }
+//   })
+//   .then(response => response.json())
+
+//   console.log(data)
+
+//   return { 
+//     props: {
+//       playlists: data
+//     }
+//   }
+// }
