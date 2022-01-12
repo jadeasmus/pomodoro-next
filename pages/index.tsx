@@ -86,16 +86,20 @@ export default function Home() {
       <Timer />
 
       {/* Choose playlist */}
-      <div className="text-center mt-10">
-        <h1 className="font-bold mb-3">Choose a playlist to listen to</h1>
-        {playlistData ? 
-          playlistData.map((obj) => 
-            <button onClick={handleTracks} className="justify-center items-center bg-white py-1 m-2 px-2 rounded">{ obj.name }</button>
-          ) 
-        : 
-          null 
-        } 
+      <div className="relative">
+        <h1 className="font-bold m-5 text-center">Choose a playlist to listen to</h1>
+        <div className="fixed left-1/3 ml-14 w-96 bg-blue-400 p-3 rounded h-1/2 overflow-auto">
+          {playlistData ? 
+            playlistData.map((obj) => 
+              <button onClick={handleTracks} className="flex mx-auto bg-white py-3 m-2 px-4 w-full rounded">{ obj.name }</button>
+            ) 
+          : 
+            null 
+          } 
+        </div>
       </div>
+
+    
     </div>
   )
 }
