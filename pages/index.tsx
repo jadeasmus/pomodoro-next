@@ -22,7 +22,38 @@ interface Playlist {
   primary_color: null,
   public: boolean,
   snapshot_id: string,
-  tracks: {},
+  tracks: {href:string, total:number},
+  type: string,
+  uri: string
+}
+
+interface Item { 
+  added_at: string,
+  added_by: {},
+  is_local: boolean,
+  primary_color: null,
+  track: Track,
+  video_thumbnail: {}
+}
+
+interface Track { 
+  album: {},
+  artists: [],
+  available_markets: {},
+  disc_number: number,
+  duration_ms: number,
+  episode: boolean,
+  explicit: boolean,
+  external_ids: {},
+  external_urls: {},
+  href: string,
+  id: string,
+  is_local: boolean,
+  name: string,
+  popularity: number,
+  preview_url: string,
+  track: boolean,
+  track_number: number,
   type: string,
   uri: string
 }
@@ -32,9 +63,12 @@ export default function Home() {
 
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [playlistData, setPlaylistData] = useState<Playlist[]>([])
+  const [tracksEndpoint, setTracksEndpoint] = useState<string>('')
+  const [tracks, setTracks] = useState<Item[]>([]) 
+  const [trackURIs, setTrackURIs] = useState<string[]>([])
 
   const logged = supabase.auth.user()
-  console.log('user: ', logged)
+  // console.log('user: ', logged)
   const provider_token = supabase.auth.session()?.provider_token
   // const refresh_token = supabase.auth.session()?.refresh_token
 
@@ -61,11 +95,53 @@ export default function Home() {
     setIsLoggedIn(supabase.auth.user() ? true : false)
   }, [logged])
 
-  const handleTracks = () => {
+  const handleTracks = (e: any) => {
+    const key = e.target.textContent
 
+    // if name param of obj is e, then grab that object's tracks
+    playlistData.filter(obj => {
+      obj.name===e.target.textContent ?
+        // console.log(obj.tracks)
+        setTracksEndpoint(obj.tracks.href)
+        :
+        null  
+    })
+
+    // make call with endpoint
+    axios.get(tracksEndpoint, {
+      headers: {
+        Authorization: `Bearer ${provider_token}`
+      },
+    })
+    .then(response => {
+      // console.log(response)
+      setTracks(response.data.items)
+      // console.log(tracks)
+
+    })
+    .catch(error => {
+      console.log(error)
+    })
+
+    
   }
   
-  console.log(playlistData)
+  // useEffect(() => {
+  //   // check that each song is being read and that the song match playlist chosen
+  //   tracks.map(obj => {
+  //     console.log(obj.track.uri, obj.track.name)
+  //   })
+    
+  //   // store track uri's
+  //   tracks.map(obj => {
+  //     setTrackURIs(trackURIs.concat(obj.track.uri))
+  //   })
+
+  //   console.log('uris: ', trackURIs)
+
+  // }, [tracks])
+  
+  // console.log(playlistData)
 
   return (
     <div>
@@ -87,11 +163,11 @@ export default function Home() {
 
       {/* Choose playlist */}
       <div className="relative">
-        <div className="fixed mt-10 left-1/3 ml-14 w-96 bg-blue-400 p-3 rounded h-1/2 overflow-auto">
+        <div className="fixed mt-10 left-1/3 ml-32 w-96 bg-blue-400 p-3 rounded h-1/2 overflow-auto">
         <h1 className="font-bold mt-2 mb-4 text-white text-center">Choose a playlist to listen to</h1>
           {playlistData ? 
             playlistData.map((obj) => 
-              <button onClick={handleTracks} className="flex mx-auto bg-white py-3 m-2 px-4 w-full rounded">{ obj.name }</button>
+              <button onClick={(event) => handleTracks(event)} className="flex mx-auto bg-white py-3 m-2 px-4 w-full rounded">{ obj.name }</button>
             ) 
           : 
             null 
