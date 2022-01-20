@@ -42,9 +42,11 @@ export default function Timer() {
                         // setCounter(bub%2===0 ? rest : flow)
                         if (bub%2===0) {
                             setCounter(rest)
+                            alert('Work timer is up! \n\nLook away from the screen and take your break.')
                         } else {
                             setCounter(flow)
                             setSessionCount(sessionCount+1)
+                            alert('Break time is up! \n\nTake a deep breath and get into flow.')
                         }
                     }
                     
@@ -70,13 +72,13 @@ export default function Timer() {
         setIsPicked(true);
         // 25 minutes work, 5 minutes rest
         if(event.target.textContent === "Classic"){
-            setCounter(1500)
-            setFlow(1500)
-            setRest(300)
+            // setCounter(1500)
+            // setFlow(1500)
+            // setRest(300)
             // Testing numbers
-            // setCounter(15)
-            // setFlow(15)
-            // setRest(3)
+            setCounter(15)
+            setFlow(15)
+            setRest(3)
         }
         // 50 minutes work, 10 minutes rest
         if(event.target.textContent === "Longer") {
