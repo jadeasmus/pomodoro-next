@@ -5,16 +5,23 @@ module.exports = {
   ],
   theme: {
     extend: {
+      animation: {
+        slide: 'slide transition ease-out duration-500',
+      },
       keyframes: {
         slide: {
-          '0%': 'ml-120%',
-          '100%': 'ml-0',
+          '0%': { transform: 'translate-x-full' },
+          '100%': { transform: 'translate-x-0' },
         }
-      }, 
-      animation: {
-        slide: 'slide 0.5s ease-in-out',
       }
     },
   },
   plugins: [],
 }
+
+
+/*
+x-transition:leave="transition ease-out duration-500"
+x-transition:leave-start="transform translate-x-0 opacity-100"
+x-transition:leave-end="transform translate-x-full opacity-0"
+*/
