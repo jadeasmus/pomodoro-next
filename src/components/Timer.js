@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import useSound from 'use-sound'
 
 export default function Timer() {
 
@@ -14,6 +15,21 @@ export default function Timer() {
     const [flow, setFlow] = useState(0)
     const [rest, setRest] = useState(0)
     const [bub, setBub] = useState(2)
+    const [work, setWork] = useState(true)
+
+    // https://freesound.org/s/614897/
+    // var startWork = new Audio('open-program-a.wav') 
+
+    const [playFlowMode] = useSound(
+        '/audio/open-program-a.wav',
+        { volume: 0.5 }
+    )
+
+    const [playBreakMode] = useSound(
+        '/audio/close-program-a.wav',
+        { volume: 0.5 }
+    )
+
 
     useEffect(() => {
         let flowInterval;
@@ -31,7 +47,7 @@ export default function Timer() {
             setMinute(computedMinute);
             setHour(computedHour);
         
-            
+    
             flowInterval = setInterval(() => {
                 // when bub is even, its time for rest, when it is odd, it's time for work
                 if (isActive) {
@@ -42,9 +58,13 @@ export default function Timer() {
                         // setCounter(bub%2===0 ? rest : flow)
                         if (bub%2===0) {
                             setCounter(rest)
+                            setWork(false)
+                            playBreakMode()
                             alert('Work timer is up! \n\nLook away from the screen and take your break.')
                         } else {
                             setCounter(flow)
+                            setWork(true)
+                            playFlowMode()
                             setSessionCount(sessionCount+1)
                             alert('Break time is up! \n\nTake a deep breath and get into flow.')
                         }
@@ -58,6 +78,7 @@ export default function Timer() {
     }, [isActive, isPicked, counter]);
 
     const stopTimer = () => {
+        setWork(true)
         setIsActive(false);
         setIsPicked(false);
         setCounter(0);
@@ -94,26 +115,37 @@ export default function Timer() {
         }
     }
 
+
     return (
-        <div className="">
+        // if in work mode: green, if in rest mode: blue 
+        <div className={work ? "h-screen bg-gradient-to-b from-red-400 to-red-300" : "h-screen bg-gradient-to-b from-blue-400 to-blue-200"}>
+
+            {/* embedding audio files */}
+            <audio>
+                <source id='work' src="/audio/open-program-a.wav"></source>
+                <source id='break' src="/audio/close-program-a.wav"></source>
+            </audio>
+
+            {/* Work status display */}
+            { isActive && work ? <h1 className='font-TwinkleStar text-9xl text-white text-center pt-24'>working</h1> : null }
+            { isActive && !work ? <h1 className='font-TwinkleStar text-9xl text-white text-center pt-24'>break</h1> : null }
+            
 
             {/* Timer display */}
-            <div className='text-white text-6xl pt-32 pb-8 text-center'>
-                <span className="">{hour}</span>
+            <div className='text-white text-6xl pt-28 pb-8 text-center'>
+                <span>{hour}</span>
                     <span>:</span>
-                <span className="minute">{minute}</span>
+                <span>{minute}</span>
                     <span>:</span>
-                <span className="second">{second}</span>
+                <span>{second}</span>
             </div>
 
             {/* Pomodoro session options */}
             {!isPicked ? 
                 <div className="text-center">
-
                     <button onClick={event => handleClick(event)} className="text-blue-800 px-3 m-3 rounded-md shadow-md bg-white">Classic</button>
                     <button onClick={event => handleClick(event)} className="text-blue-800 px-3 m-3 rounded-md shadow-md bg-white">Longer</button>
                     <button onClick={event => handleClick(event)} className="text-blue-800 px-3 m-3 rounded-md shadow-md bg-white">Longest</button>
-            
                 </div>
             : 
             <>
