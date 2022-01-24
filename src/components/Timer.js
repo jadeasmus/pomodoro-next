@@ -55,15 +55,22 @@ export default function Timer() {
                         setCounter(counter => counter - 1);
                     } else {
                         setBub(bub+1) // in rest
-                        // setCounter(bub%2===0 ? rest : flow)
                         if (bub%2===0) {
-                            setCounter(rest)
-                            setWork(false)
+                            setTimeout(() => {
+                                console.log('break timeout')
+                                setCounter(rest)
+                                setWork(false)
+                                
+                            }, 3000)
                             playBreakMode()
                             alert('Work timer is up! \n\nLook away from the screen and take your break.')
                         } else {
-                            setCounter(flow)
-                            setWork(true)
+                            setTimeout(() => {
+                                console.log('work timeout')
+                                setCounter(flow)
+                                setWork(true)
+                
+                            }, 3000)
                             playFlowMode()
                             setSessionCount(sessionCount+1)
                             alert('Break time is up! \n\nTake a deep breath and get into flow.')
@@ -76,6 +83,12 @@ export default function Timer() {
         }
         return () => clearInterval(flowInterval);
     }, [isActive, isPicked, counter]);
+
+    // const inBetweenCountdown = () => {
+    //     setTimeout(() => {
+
+    //     }, 3000)
+    // }
 
     const stopTimer = () => {
         setWork(true)
