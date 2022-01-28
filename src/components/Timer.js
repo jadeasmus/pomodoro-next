@@ -16,9 +16,7 @@ export default function Timer() {
     const [rest, setRest] = useState(0)
     const [bub, setBub] = useState(2)
     const [work, setWork] = useState(true)
-
-    // https://freesound.org/s/614897/
-    // var startWork = new Audio('open-program-a.wav') 
+    // const [width, setWidth] = useState(0)
 
     const [playFlowMode] = useSound(
         '/audio/open-program-a.wav',
@@ -53,15 +51,18 @@ export default function Timer() {
                 if (isActive) {
                     if (counter >= 1) {
                         setCounter(counter => counter - 1)
+                        // handleProgress(flow)
                     } else {
                         setBub(bub+1) // in rest
                         if (bub%2===0) {
                             setCounter(rest)
+                            // handleProgress(rest)
                             setWork(false)
                             playBreakMode()
                             alert('Work timer is up! \n\nLook away from the screen and take your break.')
                         } else {
                             setCounter(flow)
+                            // handleProgress(flow)
                             setWork(true)
                             playFlowMode()
                             setSessionCount(sessionCount+1)
@@ -149,8 +150,8 @@ export default function Timer() {
                     <span>:</span>
                 <span>{second}</span>
             </div>
-            
 
+            
             {/* Pomodoro session options */}
             {!isPicked ? 
                 <div className="text-center">
@@ -165,12 +166,23 @@ export default function Timer() {
                 </div> */}
                     
                 <div className="flex justify-center space-x-5">
-                    <button className="text-black px-4 py-1 text-lg shadow-sm mt-16 bg-white rounded-lg" onClick={() => setIsActive(!isActive)}>{isActive ? "Pause" : "Start"}</button>
-                    <button className="text-black px-4 py-1 text-lg shadow-sm mt-16 bg-white rounded-lg" onClick={() => stopTimer()}>Cancel </button>
+                    <button className="text-black px-4 py-1 text-lg shadow-sm mt-10 bg-white rounded-lg" onClick={() => setIsActive(!isActive)}>{isActive ? "Pause" : "Start"}</button>
+                    <button className="text-black px-4 py-1 text-lg shadow-sm mt-10 bg-white rounded-lg" onClick={() => stopTimer()}>Cancel </button>
                 </div>
                     
             </>
             }
+
+            {/* Progress bar */}
+            {/* { isActive && work || isActive && !work ?
+                <div 
+                    className="mx-auto mt-16 bg-yellow-300 border-yellow-300 border-2 h-4 max-w-2xl rounded-lg " 
+                    style={{ width: `${width}%` }}>
+                </div> 
+                : 
+                null
+            } */}
+        
             
         </div>
     )
