@@ -94,13 +94,13 @@ export default function Timer() {
         setIsPicked(true);
         // 25 minutes work, 5 minutes rest
         if(event.target.textContent === "Classic"){
-            // setCounter(1500)
-            // setFlow(1500)
-            // setRest(300)
+            setCounter(1500)
+            setFlow(1500)
+            setRest(300)
             // Testing numbers
-            setCounter(10)
-            setFlow(10)
-            setRest(5)
+            // setCounter(10)
+            // setFlow(10)
+            // setRest(5)
         }
         // 50 minutes work, 10 minutes rest
         if(event.target.textContent === "Longer") {
