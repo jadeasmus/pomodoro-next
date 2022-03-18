@@ -68,9 +68,15 @@ export default function Home() {
   const [trackURIs, setTrackURIs] = useState<string[]>([])
 
   const logged = supabase.auth.user()
-  // console.log('user: ', logged)
   const provider_token = supabase.auth.session()?.provider_token
-  // const refresh_token = supabase.auth.session()?.refresh_token
+
+  useEffect(() => {
+    setIsLoggedIn(supabase.auth.user() ? true : false)
+  }, [logged])
+
+  /* 
+  
+  { AXIOS REQUEST FOR PLAYLISTS }
 
   const playlists_endpoint = 'https://api.spotify.com/v1/me/playlists'
 
@@ -90,10 +96,12 @@ export default function Home() {
 
     
   }, [logged]);
+
+  */
+
+  /* 
   
-  useEffect(() => {
-    setIsLoggedIn(supabase.auth.user() ? true : false)
-  }, [logged])
+  { GET TRACKS USING RETURNED PLAYLIST DATA }
 
   const handleTracks = (e: any) => {
     const key = e.target.textContent
@@ -122,26 +130,31 @@ export default function Home() {
     .catch(error => {
       console.log(error)
     })
-
-    
   }
+  */
   
-  // useEffect(() => {
-  //   // check that each song is being read and that the song match playlist chosen
-  //   tracks.map(obj => {
-  //     console.log(obj.track.uri, obj.track.name)
-  //   })
+  /* 
+  
+  { STORES TRACKS USING AXIOS RESULT }
+
+  useEffect(() => {
+    // check that each song is being read and that the song match playlist chosen
+    tracks.map(obj => {
+      console.log(obj.track.uri, obj.track.name)
+    })
     
-  //   // store track uri's
-  //   tracks.map(obj => {
-  //     setTrackURIs(trackURIs.concat(obj.track.uri))
-  //   })
+    // store track uri's
+    tracks.map(obj => {
+      setTrackURIs(trackURIs.concat(obj.track.uri))
+    })
 
-  //   console.log('uris: ', trackURIs)
+    console.log('uris: ', trackURIs)
 
-  // }, [tracks])
+  }, [tracks])
   
-  // console.log(playlistData)
+  console.log(playlistData)
+
+  */
 
   return (
     <div>
@@ -167,7 +180,7 @@ export default function Home() {
         <h1 className="font-bold mt-2 mb-4 text-white text-center">Choose a playlist to listen to</h1>
           {playlistData ? 
             playlistData.map((obj) => 
-              <button onClick={(event) => handleTracks(event)} className="flex mx-auto bg-white py-3 m-2 px-4 w-full rounded">{ obj.name }</button>
+              <button className="flex mx-auto bg-white py-3 m-2 px-4 w-full rounded">{ obj.name }</button>
             ) 
           : 
             null 

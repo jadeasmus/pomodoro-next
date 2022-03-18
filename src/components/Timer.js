@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import useSound from 'use-sound'
 
 export default function Timer() {
 
@@ -14,6 +15,21 @@ export default function Timer() {
     const [flow, setFlow] = useState(0)
     const [rest, setRest] = useState(0)
     const [bub, setBub] = useState(2)
+    const [work, setWork] = useState(true)
+
+    // https://freesound.org/s/614897/
+    // var startWork = new Audio('open-program-a.wav') 
+
+    const [playFlowMode] = useSound(
+        '/audio/open-program-a.wav',
+        { volume: 0.5 }
+    )
+
+    const [playBreakMode] = useSound(
+        '/audio/close-program-a.wav',
+        { volume: 0.5 }
+    )
+
 
     useEffect(() => {
         let flowInterval;
@@ -31,20 +47,25 @@ export default function Timer() {
             setMinute(computedMinute);
             setHour(computedHour);
         
-            
+    
             flowInterval = setInterval(() => {
                 // when bub is even, its time for rest, when it is odd, it's time for work
                 if (isActive) {
                     if (counter >= 1) {
-                        setCounter(counter => counter - 1);
+                        setCounter(counter => counter - 1)
                     } else {
                         setBub(bub+1) // in rest
-                        // setCounter(bub%2===0 ? rest : flow)
                         if (bub%2===0) {
                             setCounter(rest)
+                            setWork(false)
+                            playBreakMode()
+                            alert('Work timer is up! \n\nLook away from the screen and take your break.')
                         } else {
                             setCounter(flow)
+                            setWork(true)
+                            playFlowMode()
                             setSessionCount(sessionCount+1)
+                            alert('Break time is up! \n\nTake a deep breath and get into flow.')
                         }
                     }
                     
@@ -55,7 +76,9 @@ export default function Timer() {
         return () => clearInterval(flowInterval);
     }, [isActive, isPicked, counter]);
 
+
     const stopTimer = () => {
+        setWork(true)
         setIsActive(false);
         setIsPicked(false);
         setCounter(0);
@@ -74,9 +97,9 @@ export default function Timer() {
             setFlow(1500)
             setRest(300)
             // Testing numbers
-            // setCounter(15)
-            // setFlow(15)
-            // setRest(3)
+            // setCounter(10)
+            // setFlow(10)
+            // setRest(5)
         }
         // 50 minutes work, 10 minutes rest
         if(event.target.textContent === "Longer") {
@@ -90,42 +113,74 @@ export default function Timer() {
             setFlow(4500)
             setRest(900)
         }
+        
     }
 
-    return (
-        <div className="">
+    const moveProgressBar = () => {
 
-            {/* Timer display */}
-            <div className='text-white text-6xl pt-32 pb-8 text-center'>
-                <span className="">{hour}</span>
-                    <span>:</span>
-                <span className="minute">{minute}</span>
-                    <span>:</span>
-                <span className="second">{second}</span>
+    }
+
+
+    return (
+        // if in work mode: green, if in rest mode: blue 
+        <div className={work ? "h-screen bg-gradient-to-b from-red-400 to-red-300" : "h-screen bg-gradient-to-b from-blue-400 to-blue-200"}>
+
+            {/* embedding audio files */}
+            <audio>
+                <source id='work' src="/audio/open-program-a.wav"></source>
+                <source id='break' src="/audio/close-program-a.wav"></source>
+            </audio>
+
+            {/* Header */}
+            <div className="flex p-5">
+                <div className="flex-none rounded-full bg-green-500 h-16 w-16"></div>
+                <div className="grow"></div>
+                <div className='flex-none border-white border-4 rounded-lg text-4xl text-center pt-2 text-white h-16 w-16'>{sessionCount}</div>
             </div>
 
+            {/* Work status display */}
+            <div className='pt-20 pb-16'>
+                { !isActive ? <h1 className='font-TwinkleStar text-7xl text-white text-center'>start your pomodoro</h1> : null }
+                { isActive && work ? <h1 className='font-TwinkleStar text-8xl text-yellow-300 text-center'> working </h1> : null }
+                { isActive && !work ? <h1 className='font-TwinkleStar text-8xl text-pink-300 text-center'> break </h1> : null }
+            </div>
+            
+            
+            {/* Timer display */}
+            <div className='text-white text-6xl pb-8 text-center'>
+                <span>{hour}</span>
+                    <span>:</span>
+                <span>{minute}</span>
+                    <span>:</span>
+                <span>{second}</span>
+            </div>
+
+            
             {/* Pomodoro session options */}
             {!isPicked ? 
                 <div className="text-center">
-
-                    <button onClick={event => handleClick(event)} className="text-blue-800 px-3 m-3 rounded-md shadow-md bg-white">Classic</button>
-                    <button onClick={event => handleClick(event)} className="text-blue-800 px-3 m-3 rounded-md shadow-md bg-white">Longer</button>
-                    <button onClick={event => handleClick(event)} className="text-blue-800 px-3 m-3 rounded-md shadow-md bg-white">Longest</button>
-            
+                    <button onClick={event => handleClick(event)} className="text-black text-lg px-4 py-1 m-3 rounded-lg shadow-sm bg-white">Classic</button>
+                    <button onClick={event => handleClick(event)} className="text-black text-lg px-4 py-1 m-3 rounded-lg shadow-sm bg-white">Longer</button>
+                    <button onClick={event => handleClick(event)} className="text-black text-lg px-4 py-1 m-3 rounded-lg shadow-sm bg-white">Longest</button>
                 </div>
             : 
             <>
-                <div className="text-center">
+                {/* <div className="text-center">
                     <h1 className="font-semibold text-blue-800"> Sessions completed: {sessionCount} </h1>
-                </div>
+                </div> */}
                     
                 <div className="flex justify-center space-x-5">
-                    <button className="text-blue-800 font-semibold text-lg h-24 w-24 mt-20 shadow-sm bg-white rounded-full" onClick={() => setIsActive(!isActive)}>{isActive ? "Pause" : "Start"}</button>
-                    <button className="text-blue-800 text-lg font-semibold shadow-sm h-24 w-24 mt-20 bg-white rounded-full" onClick={() => stopTimer()}> End Session </button>
+                    <button className="text-black px-4 py-1 text-lg shadow-sm mt-10 bg-white rounded-lg" onClick={() => setIsActive(!isActive)}>{isActive ? "Pause" : "Start"}</button>
+                    <button className="text-black px-4 py-1 text-lg shadow-sm mt-10 bg-white rounded-lg" onClick={() => stopTimer()}>Cancel </button>
                 </div>
                     
             </>
             }
+
+            {/* Progress bar */}
+            { isActive && work ? <div className="mx-auto mt-16 bg-yellow-300 border-yellow-300 border-2 w-1/3 h-4 rounded-lg "></div> : null}
+            { isActive && !work ? <div className="mx-auto mt-16 bg-pink-300 border-pink-300 border-2 w-1/3 h-4 rounded-lg "></div> : null}
+        
             
         </div>
     )
