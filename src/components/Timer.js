@@ -17,9 +17,7 @@ export default function Timer() {
     const [bub, setBub] = useState(2)
     const [work, setWork] = useState(true)
 
-    // https://freesound.org/s/614897/
-    // var startWork = new Audio('open-program-a.wav') 
-
+    
     const [playFlowMode] = useSound(
         '/audio/open-program-a.wav',
         { volume: 0.5 }
@@ -116,10 +114,6 @@ export default function Timer() {
         
     }
 
-    const moveProgressBar = () => {
-
-    }
-
 
     return (
         // if in work mode: green, if in rest mode: blue 
@@ -176,11 +170,6 @@ export default function Timer() {
                     
             </>
             }
-
-            {/* Progress bar */}
-            { isActive && work ? <div className="mx-auto mt-16 bg-yellow-300 border-yellow-300 border-2 w-1/3 h-4 rounded-lg "></div> : null}
-            { isActive && !work ? <div className="mx-auto mt-16 bg-pink-300 border-pink-300 border-2 w-1/3 h-4 rounded-lg "></div> : null}
-        
             
         </div>
     )
